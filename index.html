@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="BackOntrack — browse subjects, units, and topic notes with practice questions." />
+    <title>BackOntrack — Learn</title>
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <link id="prism-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" crossorigin="anonymous" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="logo" href="index.html">Back<span>Ontrack</span></a>
+        <div class="header-actions">
+          <div class="search-wrap" role="search">
+            <label for="global-search" class="visually-hidden">Search subjects and topics</label>
+            <input type="search" id="global-search" class="search-input" placeholder="Search subjects & topics…" autocomplete="off" />
+            <div id="search-results" class="search-results" hidden></div>
+          </div>
+          <button type="button" class="btn-icon theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Theme"></button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-content" class="main">
+      <section class="hero">
+        <div class="container">
+          <h1>Learn at your pace</h1>
+          <p class="hero-lead">Pick a subject, work through six units, read topic notes, and practice with MCQs, theory, and coding problems.</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-head">
+            <h2>Subjects</h2>
+            <p class="muted">Content loads from JSON — no login required.</p>
+          </div>
+          <div id="loading-subjects" class="loading-state" aria-live="polite">
+            <span class="spinner" aria-hidden="true"></span>
+            <span>Loading subjects…</span>
+          </div>
+          <div id="subjects-grid" class="card-grid" hidden></div>
+          <p id="subjects-error" class="error-msg" hidden></p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>© <span id="year"></span> BackOntrack. Educational demo.</p>
+      </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js" crossorigin="anonymous"></script>
+    <script type="module" src="js/theme.js"></script>
+    <script type="module" src="js/search.js"></script>
+    <script type="module" src="js/pages/home.js"></script>
+    <script>
+      /* If modules fail or fetch never completes, avoid an endless spinner */
+      (function () {
+        var t = setTimeout(function () {
+          var loading = document.getElementById("loading-subjects");
+          var grid = document.getElementById("subjects-grid");
+          var err = document.getElementById("subjects-error");
+          if (!loading || !grid || !err || loading.hidden) return;
+          if (grid.innerHTML.replace(/\s/g, "").length > 0) return;
+          loading.hidden = true;
+          err.hidden = false;
+          err.textContent =
+            "Subjects did not load. If you opened this page as a file (file://), use a local server instead: open a terminal in the project folder and run: python -m http.server 8080 — then visit http://127.0.0.1:8080/ (see RUN.md).";
+        }, 22000);
+        window.addEventListener("beforeunload", function () {
+          clearTimeout(t);
+        });
+      })();
+    </script>
+  </body>
+</html>
