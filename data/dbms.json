@@ -1,0 +1,526 @@
+{
+  "id": "dbms",
+  "name": "DBMS",
+  "description": "Relational data modeling, SQL, normalization, transactions, and query processing concepts.",
+  "units": [
+    {
+      "id": 1,
+      "title": "Introduction and relational model",
+      "summary": "Databases vs files, tables, keys, and integrity.",
+      "topics": [
+        {
+          "title": "Databases and DBMS roles",
+          "content": [
+            {
+              "type": "text",
+              "value": "A Database Management System (DBMS) provides centralized storage, concurrency control, recovery, and declarative querying. Applications interact through a well-defined API—often SQL—rather than managing files manually."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "-- Example: create a simple table\nCREATE TABLE student (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);"
+            },
+            {
+              "type": "text",
+              "value": "The relational model represents data as relations (tables) with named attributes (columns). Each row is a tuple; keys identify rows uniquely."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "INSERT INTO student (id, name) VALUES (1, 'Ada');\nSELECT * FROM student WHERE id = 1;"
+            }
+          ]
+        },
+        {
+          "title": "Keys and constraints",
+          "content": [
+            {
+              "type": "text",
+              "value": "Primary keys uniquely identify rows; foreign keys reference other tables, enforcing referential integrity. Constraints are enforced by the DBMS on insert/update/delete."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "CREATE TABLE enroll (\n  sid INTEGER REFERENCES student(id),\n  cid INTEGER,\n  PRIMARY KEY (sid, cid)\n);"
+            },
+            {
+              "type": "text",
+              "value": "Candidate keys are minimal superkeys; you choose one as primary. Alternate keys may be declared UNIQUE."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "ALTER TABLE student ADD CONSTRAINT uq_email UNIQUE (email);"
+            }
+          ]
+        }
+      ],
+      "questions": {
+        "mcqs": [
+          {
+            "question": "In the relational model, a table is also called a:",
+            "options": ["Tuple", "Relation", "Schema graph", "Index"],
+            "correctIndex": 1
+          },
+          {
+            "question": "Which constraint enforces parent/child relationships across tables?",
+            "options": ["CHECK", "NOT NULL", "FOREIGN KEY", "UNIQUE"],
+            "correctIndex": 2
+          }
+        ],
+        "theory": [
+          {
+            "question": "What problems does using a DBMS solve compared to ad-hoc files?",
+            "answer": "Centralized integrity, concurrent access with isolation, crash recovery, declarative querying, security and access control, and reduced duplication of parsing/validation logic in each application."
+          }
+        ],
+        "coding": [
+          {
+            "title": "Create and query",
+            "description": "Write SQL to create table course(id, title), insert two rows, and select titles ordered alphabetically.",
+            "hint": "Use CREATE TABLE, INSERT, SELECT ... ORDER BY.",
+            "starterCode": {
+              "language": "sql",
+              "code": "-- SQLite-style example\n-- TODO: CREATE, INSERT x2, SELECT ORDER BY title"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "SQL: core queries",
+      "summary": "SELECT, filtering, joins, and aggregation.",
+      "topics": [
+        {
+          "title": "Filtering and sorting",
+          "content": [
+            {
+              "type": "text",
+              "value": "WHERE filters rows before aggregation; HAVING filters groups after GROUP BY. ORDER BY controls presentation order—use indexes thoughtfully for large tables."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "SELECT name, score\nFROM student\nWHERE score >= 60\nORDER BY score DESC, name ASC;"
+            },
+            {
+              "type": "text",
+              "value": "NULL comparisons need IS NULL / IS NOT NULL—equality to NULL is unknown, not true."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "SELECT * FROM student WHERE advisor IS NULL;"
+            }
+          ]
+        },
+        {
+          "title": "Joins",
+          "content": [
+            {
+              "type": "text",
+              "value": "INNER JOIN keeps only matching pairs; LEFT OUTER JOIN preserves left rows even without a match (right side columns become NULL)."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "SELECT s.name, c.title\nFROM student s\nJOIN enroll e ON s.id = e.sid\nJOIN course c ON c.id = e.cid;"
+            },
+            {
+              "type": "text",
+              "value": "Join order and predicates affect performance; optimizers reorder joins using statistics."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "SELECT COUNT(*) FROM enroll e\nLEFT JOIN student s ON s.id = e.sid\nWHERE s.id IS NULL; -- orphans"
+            }
+          ]
+        }
+      ],
+      "questions": {
+        "mcqs": [
+          {
+            "question": "Which clause filters rows before grouping?",
+            "options": ["HAVING", "WHERE", "ORDER BY", "LIMIT"],
+            "correctIndex": 1
+          },
+          {
+            "question": "Which join keeps all rows from the left table?",
+            "options": ["INNER", "RIGHT", "LEFT OUTER", "CROSS"],
+            "correctIndex": 2
+          }
+        ],
+        "theory": [
+          {
+            "question": "Difference between WHERE and HAVING?",
+            "answer": "WHERE filters individual rows before aggregation. HAVING filters groups after GROUP BY, and may reference aggregates like COUNT(*) or SUM(amount)."
+          }
+        ],
+        "coding": [
+          {
+            "title": "Aggregation",
+            "description": "Given sales(order_id, amount), write SQL to return each day’s total amount (assume a date column exists).",
+            "hint": "GROUP BY date column; SUM(amount).",
+            "starterCode": {
+              "language": "sql",
+              "code": "-- SELECT day, SUM(amount) ... GROUP BY day"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Normalization",
+      "summary": "Functional dependencies and normal forms.",
+      "topics": [
+        {
+          "title": "Functional dependencies",
+          "content": [
+            {
+              "type": "text",
+              "value": "A functional dependency X → Y holds if any two tuples agreeing on X also agree on Y. Dependencies guide decomposition to reduce redundancy and anomalies."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "-- Anomalies example: repeating groups in one wide table\n-- Split into student(id, name) and phone(student_id, number)"
+            },
+            {
+              "type": "text",
+              "value": "Armstrong’s axioms help infer dependencies; closure of attribute sets finds keys."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "-- Normalization is schema design; SQL shows resulting structure"
+            }
+          ]
+        },
+        {
+          "title": "Normal forms overview",
+          "content": [
+            {
+              "type": "text",
+              "value": "1NF eliminates repeating groups; 2NF removes partial dependencies on composite keys; 3NF removes transitive dependencies on non-key attributes. BCNF tightens determinants to superkeys."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "CREATE TABLE dept (\n  id INTEGER PRIMARY KEY,\n  name TEXT\n);\nCREATE TABLE emp (\n  id INTEGER PRIMARY KEY,\n  name TEXT,\n  dept_id INTEGER REFERENCES dept(id)\n);"
+            },
+            {
+              "type": "text",
+              "value": "Denormalization is sometimes intentional for read-heavy workloads—measure before trading integrity for speed."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "-- Materialized views cache denormalized results"
+            }
+          ]
+        }
+      ],
+      "questions": {
+        "mcqs": [
+          {
+            "question": "Which normal form removes partial dependencies on part of a composite key?",
+            "options": ["1NF", "2NF", "3NF", "BCNF"],
+            "correctIndex": 1
+          },
+          {
+            "question": "Redundant storage of derivable data often causes:",
+            "options": ["Index scans", "Update anomalies", "Faster joins", "Stronger keys"],
+            "correctIndex": 1
+          }
+        ],
+        "theory": [
+          {
+            "question": "What is BCNF in one sentence?",
+            "answer": "Every determinant must be a superkey: for every nontrivial FD X → Y, X must be a superkey of the relation."
+          }
+        ],
+        "coding": [
+          {
+            "title": "Decompose a table",
+            "description": "Given R(emp_id, emp_name, dept_id, dept_name) with FDs emp_id → emp_name, dept_id → dept_name, propose 3NF schemas.",
+            "hint": "Separate employee and department; link with dept_id FK.",
+            "starterCode": {
+              "language": "sql",
+              "code": "-- Write CREATE TABLE statements for employee and department"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "title": "Transactions",
+      "summary": "ACID, isolation levels, and recovery basics.",
+      "topics": [
+        {
+          "title": "ACID properties",
+          "content": [
+            {
+              "type": "text",
+              "value": "Atomicity groups operations into all-or-nothing units. Consistency preserves declared rules. Isolation hides concurrent transactions from each other according to level. Durability commits survive crashes."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "BEGIN;\nUPDATE accounts SET bal = bal - 100 WHERE id = 1;\nUPDATE accounts SET bal = bal + 100 WHERE id = 2;\nCOMMIT;"
+            },
+            {
+              "type": "text",
+              "value": "ROLLBACK aborts a transaction, undoing its effects if supported by the engine’s logging."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "BEGIN;\n-- ...\nROLLBACK;"
+            }
+          ]
+        },
+        {
+          "title": "Isolation levels",
+          "content": [
+            {
+              "type": "text",
+              "value": "READ UNCOMMITTED allows dirty reads; READ COMMITTED avoids them; REPEATABLE READ stabilizes reads; SERIALIZABLE prevents phantoms—at higher cost."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;"
+            },
+            {
+              "type": "text",
+              "value": "MVCC engines often implement snapshot isolation with different anomaly profiles than lock-based serializability."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "-- Check your DB docs: isolation names vary slightly"
+            }
+          ]
+        }
+      ],
+      "questions": {
+        "mcqs": [
+          {
+            "question": "Which ACID property ensures committed writes survive crashes?",
+            "options": ["Atomicity", "Isolation", "Durability", "Consistency"],
+            "correctIndex": 2
+          },
+          {
+            "question": "Dirty reads are possible under:",
+            "options": ["SERIALIZABLE", "READ UNCOMMITTED", "REPEATABLE READ", "SNAPSHOT (typical)"],
+            "correctIndex": 1
+          }
+        ],
+        "theory": [
+          {
+            "question": "What is a schedule and why serializability matters?",
+            "answer": "A schedule orders operations from concurrent transactions. Conflict serializability means the schedule is equivalent to some serial order, preserving isolation guarantees users reason about."
+          }
+        ],
+        "coding": [
+          {
+            "title": "Transfer funds safely",
+            "description": "Sketch SQL for transferring amount between two rows in accounts with constraints (non-negative balance).",
+            "hint": "Use a transaction; consider SELECT ... FOR UPDATE if locking.",
+            "starterCode": {
+              "language": "sql",
+              "code": "BEGIN;\n-- TODO: lock rows, check balances, update both, COMMIT\n"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "title": "Indexing and query processing",
+      "summary": "B-trees, selectivity, and plans.",
+      "topics": [
+        {
+          "title": "Indexes",
+          "content": [
+            {
+              "type": "text",
+              "value": "Indexes trade write overhead and storage for faster lookups. B+-trees are common for range queries; hash indexes help equality lookups."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "CREATE INDEX idx_student_name ON student(name);\nEXPLAIN QUERY PLAN SELECT * FROM student WHERE name = 'Ada';"
+            },
+            {
+              "type": "text",
+              "value": "Covering indexes include all selected columns to avoid table lookups—design with query patterns in mind."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "CREATE INDEX idx_cover ON orders(customer_id) INCLUDE (order_date, total);"
+            }
+          ]
+        },
+        {
+          "title": "Query optimization",
+          "content": [
+            {
+              "type": "text",
+              "value": "Optimizers rewrite queries, estimate cardinalities, pick join orders, and choose access paths using statistics. Outdated stats cause bad plans."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "ANALYZE student; -- refresh statistics (syntax varies)"
+            },
+            {
+              "type": "text",
+              "value": "Understanding EXPLAIN output is essential for tuning—look for sequential scans on large tables."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "EXPLAIN (ANALYZE, BUFFERS) SELECT ..."
+            }
+          ]
+        }
+      ],
+      "questions": {
+        "mcqs": [
+          {
+            "question": "Which structure is widely used for range scans on indexed columns?",
+            "options": ["Hash table only", "B+-tree", "Linked list", "Bitmap only"],
+            "correctIndex": 1
+          },
+          {
+            "question": "Why might an optimizer choose a sequential scan?",
+            "options": [
+              "It never uses indexes",
+              "High selectivity or small table",
+              "Because SQL forbids indexes",
+              "Only on weekends"
+            ],
+            "correctIndex": 1
+          }
+        ],
+        "theory": [
+          {
+            "question": "What is selectivity?",
+            "answer": "The fraction of rows matching a predicate. Highly selective predicates benefit from indexes; low selectivity may favor full scans."
+          }
+        ],
+        "coding": [
+          {
+            "title": "Index for a query",
+            "description": "For WHERE status = ? AND created_at BETWEEN ? AND ?, suggest a composite index order and explain briefly.",
+            "hint": "Equality column first, then range column.",
+            "starterCode": {
+              "language": "sql",
+              "code": "-- CREATE INDEX ... ON table (...)"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "title": "NoSQL overview and design trade-offs",
+      "summary": "When document/key-value stores help—and what you give up.",
+      "topics": [
+        {
+          "title": "Polyglot persistence",
+          "content": [
+            {
+              "type": "text",
+              "value": "NoSQL systems relax parts of the relational model for scale, flexible schemas, or specialized access patterns. Choose based on consistency needs, query shapes, and operational maturity."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "-- Relational remains excellent for many workloads\n-- Document DB example is API-driven, not SQL standard"
+            },
+            {
+              "type": "text",
+              "value": "CAP theorem reminds you: during partitions, pick between availability and consistency; real systems offer tunable knobs."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "-- Design documents: embed vs reference"
+            }
+          ]
+        },
+        {
+          "title": "Design exercise mindset",
+          "content": [
+            {
+              "type": "text",
+              "value": "Model around access patterns: read-heavy feeds favor denormalization and caching; write-heavy telemetry may prefer append-only logs and batch compaction."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "-- Star/snowflake schemas for analytics warehouses"
+            },
+            {
+              "type": "text",
+              "value": "Always measure: synthetic benchmarks rarely match production skew and concurrency."
+            },
+            {
+              "type": "code",
+              "language": "sql",
+              "code": "-- End of DBMS track sample queries"
+            }
+          ]
+        }
+      ],
+      "questions": {
+        "mcqs": [
+          {
+            "question": "Which is a common motivation for document databases?",
+            "options": [
+              "Guaranteed joins are faster",
+              "Flexible/evolving record shapes",
+              "Eliminates need for backups",
+              "Automatic 3NF"
+            ],
+            "correctIndex": 1
+          },
+          {
+            "question": "Eventual consistency means:",
+            "options": [
+              "Writes never persist",
+              "Replicas converge over time without partitions",
+              "All reads are serializable",
+              "No network required"
+            ],
+            "correctIndex": 1
+          }
+        ],
+        "theory": [
+          {
+            "question": "Name one trade-off when moving from RDBMS to a key-value store.",
+            "answer": "You may lose declarative joins and rich constraints, pushing more integrity logic into applications and complicating ad-hoc querying."
+          }
+        ],
+        "coding": [
+          {
+            "title": "Schema choice",
+            "description": "Compare storing user profiles as JSON documents vs normalized tables for a read-mostly social feed.",
+            "hint": "Think about update frequency, query patterns, and integrity.",
+            "starterCode": {
+              "language": "sql",
+              "code": "-- Outline two designs in comments; optional CREATE snippets"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,526 @@
+{
+  "id": "dsa",
+  "name": "DSA",
+  "description": "Data structures and algorithms: complexity, core structures, sorting, trees, graphs, and DP patterns.",
+  "units": [
+    {
+      "id": 1,
+      "title": "Complexity and big-O",
+      "summary": "Modeling cost, growth rates, and empirical measurement.",
+      "topics": [
+        {
+          "title": "Asymptotic notation",
+          "content": [
+            {
+              "type": "text",
+              "value": "Big-O describes upper bounds on growth; Omega lower bounds; Theta tight bounds. Constants and lower-order terms drop as n grows—focus on dominant terms."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "# Example: nested loop O(n^2)\ndef pairs(n):\n    c = 0\n    for i in range(n):\n        for j in range(n):\n            c += 1\n    return c"
+            },
+            {
+              "type": "text",
+              "value": "Amortized analysis averages cost over a sequence (e.g., dynamic array appends). Worst-case vs average-case differ—know your distribution."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "# Binary search O(log n) on sorted array\ndef bin_search(a, x):\n    lo, hi = 0, len(a)-1\n    while lo <= hi:\n        mid = (lo+hi)//2\n        if a[mid] == x: return mid\n        elif a[mid] < x: lo = mid+1\n        else: hi = mid-1\n    return -1"
+            }
+          ]
+        },
+        {
+          "title": "Recurrences",
+          "content": [
+            {
+              "type": "text",
+              "value": "Divide-and-conquer recurrences often look like T(n)=aT(n/b)+f(n). The master method gives asymptotics for many common cases."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "# Merge sort: T(n) = 2T(n/2) + O(n) => O(n log n)\ndef mergesort(a):\n    if len(a) <= 1: return a\n    m = len(a)//2\n    return merge(mergesort(a[:m]), mergesort(a[m:]))"
+            },
+            {
+              "type": "text",
+              "value": "Substitution and recursion trees build intuition when the master theorem doesn’t apply cleanly."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "def merge(u, v):\n    i, j = 0, 0\n    r = []\n    while i < len(u) and j < len(v):\n        if u[i] <= v[j]:\n            r.append(u[i]); i += 1\n        else:\n            r.append(v[j]); j += 1\n    return r + u[i:] + v[j:]"
+            }
+          ]
+        }
+      ],
+      "questions": {
+        "mcqs": [
+          {
+            "question": "Which grows slowest as n increases?",
+            "options": ["O(n^2)", "O(n log n)", "O(2^n)", "O(log n)"],
+            "correctIndex": 3
+          },
+          {
+            "question": "Binary search requires the input to be:",
+            "options": ["Random", "Sorted", "Unique", "A power of two"],
+            "correctIndex": 1
+          }
+        ],
+        "theory": [
+          {
+            "question": "Define amortized time with an example.",
+            "answer": "Amortized time averages the total cost of a sequence of operations. A dynamic array doubling its capacity when full charges O(1) amortized per append even though some appends trigger O(n) resizing."
+          }
+        ],
+        "coding": [
+          {
+            "title": "Two-sum sorted",
+            "description": "Given sorted array, find two indices whose values sum to target in O(n) time.",
+            "hint": "Two pointers from both ends.",
+            "starterCode": {
+              "language": "python",
+              "code": "def two_sum_sorted(a, t):\n    # return (i,j) or None\n    pass"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Arrays, linked lists, stacks, queues",
+      "summary": "Sequential structures and their trade-offs.",
+      "topics": [
+        {
+          "title": "Dynamic arrays vs linked lists",
+          "content": [
+            {
+              "type": "text",
+              "value": "Arrays offer O(1) index access and cache-friendly layout; inserts in the middle cost O(n). Linked lists offer O(1) inserts given a pointer but poor locality and no O(1) random access."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "class Node:\n    __slots__ = ('val','next')\n    def __init__(self, v, n=None):\n        self.val = v; self.next = n"
+            },
+            {
+              "type": "text",
+              "value": "Choose structures based on access patterns: frequent tail operations favor deques; index-heavy workloads favor arrays."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "from collections import deque\nq = deque()\nq.append(1); q.appendleft(0); q.pop(); q.popleft()"
+            }
+          ]
+        },
+        {
+          "title": "Stacks and parentheses",
+          "content": [
+            {
+              "type": "text",
+              "value": "Stacks are LIFO; queues FIFO. Both appear in graph algorithms, parsing, and scheduling."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "def valid_paren(s):\n    st=[]\n    m={')':'(',']':'[','}':'{'}\n    for ch in s:\n        if ch in '([{': st.append(ch)\n        elif ch in m:\n            if not st or st.pop()!=m[ch]: return False\n        else: return False\n    return not st"
+            },
+            {
+              "type": "text",
+              "value": "Monotonic stacks solve next-greater-element style problems in linear time."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "# next greater to the right (sketch)\n# maintain decreasing stack of indices"
+            }
+          ]
+        }
+      ],
+      "questions": {
+        "mcqs": [
+          {
+            "question": "Middle insertion is asymptotically cheaper in which structure (typical singly linked vs array)?",
+            "options": ["Array always", "Linked list if you have a node pointer", "Both O(1)", "Neither"],
+            "correctIndex": 1
+          },
+          {
+            "question": "A deque supports:",
+            "options": [
+              "Only push/pop at one end",
+              "Efficient ops at both ends",
+              "Only sorted inserts",
+              "O(1) random access always"
+            ],
+            "correctIndex": 1
+          }
+        ],
+        "theory": [
+          {
+            "question": "Why are arrays more cache-friendly than linked lists?",
+            "answer": "Array elements are contiguous in memory, improving spatial locality and CPU prefetching. Linked list nodes scatter across the heap, causing more cache misses when traversing."
+          }
+        ],
+        "coding": [
+          {
+            "title": "Reverse linked list",
+            "description": "Implement iterative reversal of a singly linked list in O(n) time and O(1) extra space.",
+            "hint": "Three pointers: prev, cur, next.",
+            "starterCode": {
+              "language": "python",
+              "code": "def reverse(head):\n    # return new head\n    pass"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Hashing and sorting",
+      "summary": "Hash tables, collision strategies, classic sorts.",
+      "topics": [
+        {
+          "title": "Hash tables",
+          "content": [
+            {
+              "type": "text",
+              "value": "Hash maps map keys to slots via a hash function; collisions handled by chaining or open addressing. Expected O(1) ops if load factor is bounded and hashing is uniform."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "freq = {}\nfor x in arr:\n    freq[x] = freq.get(x,0)+1"
+            },
+            {
+              "type": "text",
+              "value": "Universal hashing reduces adversarial collisions; cryptographic hashes are overkill for containers."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "# Python dict is a highly optimized hash table"
+            }
+          ]
+        },
+        {
+          "title": "Sorting algorithms",
+          "content": [
+            {
+              "type": "text",
+              "value": "Comparison sorts lower bound is Omega(n log n). QuickSort average O(n log n), worst O(n^2) without pivots; MergeSort stable O(n log n) worst case; HeapSort in-place O(n log n)."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "def quicksort(a):\n    if len(a) <= 1: return a\n    p = a[len(a)//2]\n    return quicksort([x for x in a if x < p]) + [x for x in a if x==p] + quicksort([x for x in a if x > p])"
+            },
+            {
+              "type": "text",
+              "value": "Non-comparison sorts (counting, radix) beat the log factor when keys are constrained."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "def counting_sort(a, k):\n    c=[0]*(k+1)\n    for x in a: c[x]+=1\n    return [i for i,v in enumerate(c) for _ in range(v)]"
+            }
+          ]
+        }
+      ],
+      "questions": {
+        "mcqs": [
+          {
+            "question": "Average-case find in a good hash table is typically:",
+            "options": ["O(n)", "O(log n)", "O(1)", "O(n log n)"],
+            "correctIndex": 2
+          },
+          {
+            "question": "Which sort is stable by default in typical implementations?",
+            "options": ["QuickSort", "HeapSort", "MergeSort", "Selection sort"],
+            "correctIndex": 2
+          }
+        ],
+        "theory": [
+          {
+            "question": "Why can counting sort beat O(n log n)?",
+            "answer": "It avoids comparisons by exploiting bounded integer keys—using direct indexing into counts—so it is not a comparison sort and not subject to the n log n comparison lower bound."
+          }
+        ],
+        "coding": [
+          {
+            "title": "Top-K frequent",
+            "description": "Given integer array, return k most frequent elements.",
+            "hint": "Hash counts + heap or bucket by frequency.",
+            "starterCode": {
+              "language": "python",
+              "code": "def top_k_frequent(nums, k):\n    pass"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "title": "Trees and heaps",
+      "summary": "BSTs, traversals, priority queues.",
+      "topics": [
+        {
+          "title": "Binary trees",
+          "content": [
+            {
+              "type": "text",
+              "value": "Traversals: preorder (node-left-right), inorder on BST yields sorted order, postorder useful for deletion bottom-up."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "def inorder(root):\n    if not root: return []\n    return inorder(root.left) + [root.val] + inorder(root.right)"
+            },
+            {
+              "type": "text",
+              "value": "Balanced BSTs (AVL, red-black) guarantee O(log n) height—critical for worst-case maps/sets."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "# BST insert sketch\ndef insert(n, x):\n    if n is None: return Node(x)\n    if x < n.val: n.left = insert(n.left, x)\n    else: n.right = insert(n.right, x)\n    return n"
+            }
+          ]
+        },
+        {
+          "title": "Heaps",
+          "content": [
+            {
+              "type": "text",
+              "value": "Binary heaps are complete trees stored in arrays; support O(log n) insert/extract-min. Build-heap is O(n)."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "import heapq\nh=[]\nheapq.heappush(h,3); heapq.heappush(h,1)\nprint(heapq.heappop(h))"
+            },
+            {
+              "type": "text",
+              "value": "Heaps power Dijkstra’s algorithm, merging k sorted lists, and scheduling."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "# Dijkstra priority queue step uses heapq"
+            }
+          ]
+        }
+      ],
+      "questions": {
+        "mcqs": [
+          {
+            "question": "In-order traversal of a valid BST visits values in:",
+            "options": ["Random order", "Sorted order", "Reverse sorted", "Heap order"],
+            "correctIndex": 1
+          },
+          {
+            "question": "Min-heap extract-min time:",
+            "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+            "correctIndex": 1
+          }
+        ],
+        "theory": [
+          {
+            "question": "Why prefer balanced BSTs over naive BST?",
+            "answer": "A naive BST can degenerate to a linked list with height O(n) if insertions are sorted; balanced trees keep height O(log n), restoring expected logarithmic operations."
+          }
+        ],
+        "coding": [
+          {
+            "title": "Validate BST",
+            "description": "Given root, return whether the tree satisfies BST property.",
+            "hint": "Pass valid (min,max) bounds per node.",
+            "starterCode": {
+              "language": "python",
+              "code": "def is_bst(root):\n    pass"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "title": "Graphs",
+      "summary": "Representations, BFS/DFS, shortest paths intro.",
+      "topics": [
+        {
+          "title": "Adjacency lists",
+          "content": [
+            {
+              "type": "text",
+              "value": "Graphs encode relationships: adjacency lists are space-efficient for sparse graphs; matrices help dense graphs and fast edge queries."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "from collections import defaultdict\nG = defaultdict(list)\nG[0].append(1); G[1].append(2)"
+            },
+            {
+              "type": "text",
+              "value": "BFS explores layer by layer—shortest unweighted paths; DFS explores deep paths first—good for connectivity and topological sort on DAGs."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "def bfs(s, G):\n    from collections import deque\n    q=deque([s]); seen={s}\n    while q:\n        u=q.popleft()\n        for v in G[u]:\n            if v not in seen:\n                seen.add(v); q.append(v)"
+            }
+          ]
+        },
+        {
+          "title": "Shortest paths",
+          "content": [
+            {
+              "type": "text",
+              "value": "Dijkstra handles non-negative edge weights with a priority queue. Bellman-Ford tolerates negative edges (no negative cycles). Floyd-Warshall all-pairs O(n^3)."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "# Dijkstra pseudocode uses dist[] and pq"
+            },
+            {
+              "type": "text",
+              "value": "For unweighted graphs, BFS already yields shortest path lengths."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "def layers(G, s):\n    # return distances by BFS level\n    pass"
+            }
+          ]
+        }
+      ],
+      "questions": {
+        "mcqs": [
+          {
+            "question": "BFS on an unweighted graph from s finds:",
+            "options": [
+              "Minimum spanning tree always",
+              "Shortest path edge counts",
+              "Maximum flow",
+              "Topological order always"
+            ],
+            "correctIndex": 1
+          },
+          {
+            "question": "DFS is commonly used for:",
+            "options": ["Single-source shortest paths with negatives", "Topological sort on a DAG", "MST on dense graphs only", "Hashing"],
+            "correctIndex": 1
+          }
+        ],
+        "theory": [
+          {
+            "question": "When does Dijkstra fail?",
+            "answer": "With negative edge weights (even without negative cycles), the greedy relaxation order breaks; use Bellman-Ford or specialized variants instead."
+          }
+        ],
+        "coding": [
+          {
+            "title": "Connected components",
+            "description": "Count connected components in an undirected graph given n nodes and edge list.",
+            "hint": "Union-find or DFS from each unseen node.",
+            "starterCode": {
+              "language": "python",
+              "code": "def count_components(n, edges):\n    pass"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "title": "Dynamic programming",
+      "summary": "Overlapping subproblems, memoization, and tabulation.",
+      "topics": [
+        {
+          "title": "Memoization vs tabulation",
+          "content": [
+            {
+              "type": "text",
+              "value": "DP applies when optimal substructure and overlapping subproblems hold. Top-down memoization is recursive with cache; bottom-up tabulation fills tables iteratively."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "def fib(n, memo={}):\n    if n <= 1: return n\n    if n in memo: return memo[n]\n    memo[n] = fib(n-1, memo) + fib(n-2, memo)\n    return memo[n]"
+            },
+            {
+              "type": "text",
+              "value": "State definition is the hard part—encode minimal information to make transitions well-defined."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "# 0-1 knapsack: dp[i][w] using first i items with weight w"
+            }
+          ]
+        },
+        {
+          "title": "Classic patterns",
+          "content": [
+            {
+              "type": "text",
+              "value": "LCS, edit distance, coin change, and subset sums illustrate 1D/2D recurrences. Often compress dimensions when only previous row matters."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "def lcs(a,b):\n    dp = [[0]*(len(b)+1) for _ in range(len(a)+1)]\n    for i in range(1,len(a)+1):\n        for j in range(1,len(b)+1):\n            if a[i-1]==b[j-1]: dp[i][j]=dp[i-1][j-1]+1\n            else: dp[i][j]=max(dp[i-1][j], dp[i][j-1])\n    return dp[-1][-1]"
+            },
+            {
+              "type": "text",
+              "value": "Practice translating recurrences to iterative code to avoid stack limits."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "code": "# DP on trees: subtree states"
+            }
+          ]
+        }
+      ],
+      "questions": {
+        "mcqs": [
+          {
+            "question": "DP requires primarily:",
+            "options": [
+              "No overlapping subproblems",
+              "Overlapping subproblems + optimal substructure",
+              "Only greedy choice",
+              "Randomized pivots"
+            ],
+            "correctIndex": 1
+          },
+          {
+            "question": "Memoization is typically:",
+            "options": ["Bottom-up only", "Top-down with cache", "O(1) always", "Only for graphs"],
+            "correctIndex": 1
+          }
+        ],
+        "theory": [
+          {
+            "question": "Give an example where greedy fails but DP works.",
+            "answer": "0-1 knapsack with arbitrary values—greedy by value/weight ratio fails, while DP over items and capacity finds the optimum."
+          }
+        ],
+        "coding": [
+          {
+            "title": "Climbing stairs variants",
+            "description": "Count ways to reach step n if you can take 1 or 2 steps at a time—extend to 1,2,3 steps.",
+            "hint": "Linear recurrence; matrix exponentiation for huge n.",
+            "starterCode": {
+              "language": "python",
+              "code": "def ways(n):\n    pass"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

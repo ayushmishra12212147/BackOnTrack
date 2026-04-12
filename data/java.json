@@ -1,0 +1,536 @@
+{
+  "id": "java",
+  "name": "Java",
+  "description": "Object-oriented programming on the JVM: classes, collections, exceptions, and modern language features.",
+  "units": [
+    {
+      "id": 1,
+      "title": "Basics and JVM",
+      "summary": "Syntax, compilation, and running programs.",
+      "topics": [
+        {
+          "title": "Hello class and main",
+          "content": [
+            {
+              "type": "text",
+              "value": "Java source compiles to bytecode executed by the JVM. Entry point is public static void main(String[] args) inside a class whose name matches the public file name."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "public class Hello {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, BackOntrack!\");\n    }\n}"
+            },
+            {
+              "type": "text",
+              "value": "javac compiles .java to .class; java launches the main class. Modules (Java 9+) add stronger encapsulation at the package graph level."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "// Typical commands:\n// javac Hello.java\n// java Hello"
+            }
+          ]
+        },
+        {
+          "title": "Primitives and wrappers",
+          "content": [
+            {
+              "type": "text",
+              "value": "Primitives (int, double, boolean, ...) are value types; wrapper classes box them for collections and generics. Prefer primitives in hot loops to reduce allocation."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "int x = 7;\nInteger y = Integer.valueOf(x);\nvar z = y + 3; // unboxing"
+            },
+            {
+              "type": "text",
+              "value": "var (local type inference) keeps code concise but still static—types are inferred at compile time."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "var list = java.util.List.of(\"a\", \"b\");"
+            }
+          ]
+        }
+      ],
+      "questions": {
+        "mcqs": [
+          {
+            "question": "What file name must a public top-level class use?",
+            "options": ["Any.java", "Must match class name.java", "main.java", "src.java"],
+            "correctIndex": 1
+          },
+          {
+            "question": "Which executes Java bytecode?",
+            "options": ["javac", "jar", "javadoc", "java (JVM)"],
+            "correctIndex": 3
+          }
+        ],
+        "theory": [
+          {
+            "question": "Why does Java compile to bytecode instead of native code immediately?",
+            "answer": "Bytecode is portable across operating systems; the JVM can optimize at runtime (JIT), profile hot code, and apply safety checks before execution."
+          }
+        ],
+        "coding": [
+          {
+            "title": "Sum command-line integers",
+            "description": "Write a main that parses args as integers and prints their sum; handle NumberFormatException.",
+            "hint": "Iterate args; Integer.parseInt in try/catch.",
+            "starterCode": {
+              "language": "java",
+              "code": "public class SumArgs {\n    public static void main(String[] args) {\n        // TODO\n    }\n}"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "OOP in Java",
+      "summary": "Classes, inheritance, polymorphism, interfaces.",
+      "topics": [
+        {
+          "title": "Classes and objects",
+          "content": [
+            {
+              "type": "text",
+              "value": "Classes bundle state (fields) and behavior (methods). Constructors initialize instances; use private fields with accessors to preserve invariants."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "public class Point {\n    private final int x;\n    private final int y;\n    public Point(int x, int y) { this.x = x; this.y = y; }\n    public int x() { return x; }\n}"
+            },
+            {
+              "type": "text",
+              "value": "Immutability (final fields, no setters) simplifies reasoning in concurrent programs."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "public record PointR(int x, int y) {} // Java 16+"
+            }
+          ]
+        },
+        {
+          "title": "Interfaces and abstract classes",
+          "content": [
+            {
+              "type": "text",
+              "value": "Interfaces define contracts; default methods provide shared behavior. Abstract classes capture partial implementations and state."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "public interface Shape {\n    double area();\n}\n\npublic final class Circle implements Shape {\n    private final double r;\n    public Circle(double r) { this.r = r; }\n    public double area() { return Math.PI * r * r; }\n}"
+            },
+            {
+              "type": "text",
+              "value": "Prefer composition over deep inheritance hierarchies—inherit for true is-a relationships."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "// Strategy pattern via interface injection"
+            }
+          ]
+        }
+      ],
+      "questions": {
+        "mcqs": [
+          {
+            "question": "Which keyword prevents subclassing a class?",
+            "options": ["static", "final", "abstract", "volatile"],
+            "correctIndex": 1
+          },
+          {
+            "question": "A class can implement:",
+            "options": ["Exactly zero interfaces", "Exactly one interface", "Multiple interfaces", "Only abstract classes"],
+            "correctIndex": 2
+          }
+        ],
+        "theory": [
+          {
+            "question": "Interface vs abstract class?",
+            "answer": "Interfaces define behavior contracts (often without state) and support multiple inheritance of type. Abstract classes can hold fields and partial method bodies while still forcing subclasses to complete the type."
+          }
+        ],
+        "coding": [
+          {
+            "title": "Shape area calculator",
+            "description": "Define interface Shape with area(); implement Rectangle and Triangle; print areas from a list.",
+            "hint": "Use List<Shape> and polymorphism.",
+            "starterCode": {
+              "language": "java",
+              "code": "import java.util.List;\n\ninterface Shape { double area(); }\n// TODO classes + demo"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Collections and generics",
+      "summary": "Lists, maps, sets, and type-safe APIs.",
+      "topics": [
+        {
+          "title": "Lists and sets",
+          "content": [
+            {
+              "type": "text",
+              "value": "ArrayList provides indexed access with amortized O(1) append; LinkedList wins for frequent middle inserts but loses cache locality. HashSet offers O(1) average membership."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "import java.util.*;\n\nvar nums = new ArrayList<Integer>();\nnums.add(3); nums.add(1);\nCollections.sort(nums);"
+            },
+            {
+              "type": "text",
+              "value": "equals and hashCode contracts must align for HashSet/HashMap correctness—use IDE generators or records carefully."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "Set<String> s = new HashSet<>();\ns.add(\"x\"); s.contains(\"x\");"
+            }
+          ]
+        },
+        {
+          "title": "Maps and generics",
+          "content": [
+            {
+              "type": "text",
+              "value": "HashMap provides expected O(1) get/put; TreeMap keeps sorted keys. Generics erase to raw types at runtime with casts inserted by the compiler."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "Map<String, Integer> freq = new HashMap<>();\nfor (var w : words) freq.merge(w, 1, Integer::sum);"
+            },
+            {
+              "type": "text",
+              "value": "Wildcards (?, ? extends T, ? super T) increase API flexibility for producers/consumers."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "static <T> void copy(List<? super T> dst, List<? extends T> src) { ... }"
+            }
+          ]
+        }
+      ],
+      "questions": {
+        "mcqs": [
+          {
+            "question": "Which collection preserves insertion order as of common JDK implementations for LinkedHashMap?",
+            "options": [
+              "HashMap always",
+              "LinkedHashMap iteration order",
+              "TreeMap unsorted",
+              "Hashtable random"
+            ],
+            "correctIndex": 1
+          },
+          {
+            "question": "Generics in Java are primarily enforced at:",
+            "options": ["Runtime reflection always", "Compile time", "Bytecode only", "GC phase"],
+            "correctIndex": 1
+          }
+        ],
+        "theory": [
+          {
+            "question": "Why implement both equals and hashCode for HashMap keys?",
+            "answer": "Equal objects must have equal hash codes so buckets agree; inconsistent implementations break map invariants and cause lost entries or duplicates."
+          }
+        ],
+        "coding": [
+          {
+            "title": "Word frequency",
+            "description": "Read tokens and print the top 3 most frequent words using a map and sorting.",
+            "hint": "Map<String,Long> or Integer; stream sorted by value.",
+            "starterCode": {
+              "language": "java",
+              "code": "import java.util.*;\nimport java.util.stream.*;\n\npublic class TopWords {\n    public static void main(String[] args) {\n        // TODO\n    }\n}"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "title": "Exceptions and IO",
+      "summary": "Checked vs unchecked, try-with-resources.",
+      "topics": [
+        {
+          "title": "Exception model",
+          "content": [
+            {
+              "type": "text",
+              "value": "Throwable splits into Error (usually unrecoverable) and Exception. RuntimeException is unchecked; other checked exceptions must be declared or handled."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "try {\n    int x = Integer.parseInt(s);\n} catch (NumberFormatException ex) {\n    System.err.println(\"bad number\");\n}"
+            },
+            {
+              "type": "text",
+              "value": "Don’t catch Throwable broadly in libraries—convert to domain-specific exceptions at boundaries."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "try (var in = Files.newBufferedReader(path)) {\n    return in.readLine();\n}"
+            }
+          ]
+        },
+        {
+          "title": "NIO.2 basics",
+          "content": [
+            {
+              "type": "text",
+              "value": "java.nio.file Paths/Files provide modern file operations; try-with-resources closes Closeable handles automatically."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "import java.nio.file.*;\n\nString text = Files.readString(Path.of(\"in.txt\"));"
+            },
+            {
+              "type": "text",
+              "value": "For large files, stream lines instead of loading entire contents into memory."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "try (var lines = Files.lines(path)) {\n    lines.filter(l -> !l.isBlank()).forEach(System.out::println);\n}"
+            }
+          ]
+        }
+      ],
+      "questions": {
+        "mcqs": [
+          {
+            "question": "Which is unchecked?",
+            "options": ["IOException", "SQLException", "RuntimeException", "ReflectiveOperationException"],
+            "correctIndex": 2
+          },
+          {
+            "question": "try-with-resources requires:",
+            "options": [
+              "finally block",
+              "Resources implementing AutoCloseable",
+              "Only sockets",
+              "Synchronized keyword"
+            ],
+            "correctIndex": 1
+          }
+        ],
+        "theory": [
+          {
+            "question": "When are checked exceptions controversial?",
+            "answer": "They force handling at every layer, which can lead to boilerplate throws chains. Many APIs prefer unchecked exceptions for fault-tolerant boundaries while documenting failure modes clearly."
+          }
+        ],
+        "coding": [
+          {
+            "title": "Safe file copy",
+            "description": "Copy a text file using Files and handle IOException with a clear message.",
+            "hint": "Files.copy with REPLACE_EXISTING; or read/writeString.",
+            "starterCode": {
+              "language": "java",
+              "code": "import java.nio.file.*;\n\npublic class Copy {\n    public static void main(String[] args) throws Exception {\n        // TODO Paths from args\n    }\n}"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "title": "Concurrency basics",
+      "summary": "Threads, synchronization, and executors.",
+      "topics": [
+        {
+          "title": "Threads and Runnable",
+          "content": [
+            {
+              "type": "text",
+              "value": "Java threads map to OS threads (on most JVMs). Prefer executor services over raw Thread for pooling and lifecycle management."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "var ex = java.util.concurrent.Executors.newFixedThreadPool(4);\nex.submit(() -> System.out.println(\"hi\"));\nex.shutdown();"
+            },
+            {
+              "type": "text",
+              "value": "Shared mutable state needs synchronization—locks, atomics, or confinement—to avoid data races."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "private final Object lock = new Object();\nsynchronized (lock) { /* critical section */ }"
+            }
+          ]
+        },
+        {
+          "title": "java.util.concurrent",
+          "content": [
+            {
+              "type": "text",
+              "value": "ConcurrentHashMap offers segmented locking; CompletableFuture composes async pipelines; CountDownLatch coordinates phases."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "var map = new java.util.concurrent.ConcurrentHashMap<String, Integer>();"
+            },
+            {
+              "type": "text",
+              "value": "Immutability and message passing reduce lock contention—design with failure in mind."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "// Virtual threads (Project Loom) simplify blocking IO at scale"
+            }
+          ]
+        }
+      ],
+      "questions": {
+        "mcqs": [
+          {
+            "question": "Which is preferred for many short tasks?",
+            "options": ["new Thread() per task always", "ExecutorService pool", "Timer only", "Synchronized on String literals"],
+            "correctIndex": 1
+          },
+          {
+            "question": "A data race happens when:",
+            "options": [
+              "Two threads read immutable data",
+              "Unsynchronized concurrent access to shared mutable state",
+              "Using final fields",
+              "GC runs"
+            ],
+            "correctIndex": 1
+          }
+        ],
+        "theory": [
+          {
+            "question": "What does volatile guarantee?",
+            "answer": "Visibility of writes across threads and ordering constraints for accesses to that variable—not atomicity of compound operations like increment unless using atomics or locks."
+          }
+        ],
+        "coding": [
+          {
+            "title": "Parallel sum",
+            "description": "Split an int array into chunks and sum using an ExecutorService; compare with a single-thread sum.",
+            "hint": "Future<Integer> per chunk; watch overflow.",
+            "starterCode": {
+              "language": "java",
+              "code": "import java.util.concurrent.*;\n\npublic class ParallelSum {\n    // TODO\n}"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "title": "Modern Java features",
+      "summary": "Records, sealed types, pattern matching highlights.",
+      "topics": [
+        {
+          "title": "Records",
+          "content": [
+            {
+              "type": "text",
+              "value": "Records are transparent carriers for immutable data—constructors, equals/hashCode/toString generated. Ideal for DTOs and algebraic-style modeling."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "public record User(String name, int score) {\n    public User {\n        if (score < 0) throw new IllegalArgumentException();\n    }\n}"
+            },
+            {
+              "type": "text",
+              "value": "Validation in compact constructors keeps invariants without boilerplate."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "var u = new User(\"Ada\", 100);\nSystem.out.println(u.name());"
+            }
+          ]
+        },
+        {
+          "title": "Sealed classes",
+          "content": [
+            {
+              "type": "text",
+              "value": "Sealed types restrict which classes may extend them—useful for exhaustive switch modeling when combined with pattern matching."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "sealed interface Expr permits Lit, Add { }\nfinal class Lit implements Expr { int v() { return 0; } }\nfinal class Add implements Expr { }"
+            },
+            {
+              "type": "text",
+              "value": "Exhaustive switches help the compiler warn when cases are missing—improving maintenance."
+            },
+            {
+              "type": "code",
+              "language": "java",
+              "code": "static int eval(Expr e) {\n    return switch (e) {\n        case Lit l -> 0;\n        case Add a -> 1;\n    };\n}"
+            }
+          ]
+        }
+      ],
+      "questions": {
+        "mcqs": [
+          {
+            "question": "Records are primarily intended for:",
+            "options": [
+              "Heavy inheritance trees",
+              "Immutable data aggregates",
+              "Native memory access",
+              "Bytecode generation"
+            ],
+            "correctIndex": 1
+          },
+          {
+            "question": "Sealed classes help the compiler:",
+            "options": [
+              "Remove generics",
+              "Reason about exhaustive hierarchies",
+              "Disable exceptions",
+              "Inline all methods"
+            ],
+            "correctIndex": 1
+          }
+        ],
+        "theory": [
+          {
+            "question": "When might you avoid records?",
+            "answer": "When you need extensive mutability, complex identity semantics, or inheritance hierarchies that don’t fit the nominal record model—use regular classes."
+          }
+        ],
+        "coding": [
+          {
+            "title": "Model JSON-like tree",
+            "description": "Sketch sealed interface Json with records JsonNull, JsonBool, JsonNum, JsonStr, JsonArr, JsonObj.",
+            "hint": "Use List<Json> and Map<String,Json> fields.",
+            "starterCode": {
+              "language": "java",
+              "code": "// sealed interface Json permits ...\n// define records with compact validation"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
