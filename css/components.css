@@ -19,6 +19,33 @@
   height: var(--header-h);
 }
 
+.top-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-left: 0.25rem;
+  flex: 0 0 auto;
+}
+
+.top-nav a {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--radius-md);
+  transition: background var(--transition), color var(--transition);
+}
+
+.top-nav a:hover {
+  color: var(--text);
+  background: var(--accent-soft);
+}
+
+.top-nav a[aria-current="page"] {
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--border));
+}
+
 .logo {
   font-weight: 700;
   font-size: 1.25rem;
@@ -237,6 +264,71 @@
 .btn-sm {
   padding: 0.4rem 0.75rem;
   font-size: 0.85rem;
+}
+
+.form-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 1.25rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.35rem;
+  margin-bottom: 0.9rem;
+}
+
+.field label {
+  font-size: 0.92rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  color: var(--text);
+  font: inherit;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.field textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.help {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.footer-links {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.footer-links a {
+  color: var(--text-muted);
+}
+
+.footer-links a:hover {
+  color: var(--accent);
 }
 
 .unit-list {
@@ -468,6 +560,10 @@ details.hint summary {
 @media (max-width: 640px) {
   .header-actions {
     flex-wrap: wrap;
+  }
+
+  .top-nav {
+    display: none;
   }
 
   .search-wrap {
