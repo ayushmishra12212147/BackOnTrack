@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="BackOntrack Privacy Policy — how we handle data and ads." />
+    <title>Privacy Policy — BackOntrack</title>
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <link id="prism-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" crossorigin="anonymous" />
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9770169512662264" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="logo" href="index.html">Back<span>Ontrack</span></a>
+        <nav class="top-nav" aria-label="Primary">
+          <a href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+          <a href="privacy.html" aria-current="page">Privacy</a>
+        </nav>
+        <div class="header-actions">
+          <div class="search-wrap" role="search">
+            <label for="global-search" class="visually-hidden">Search subjects and topics</label>
+            <input type="search" id="global-search" class="search-input" placeholder="Search subjects & topics…" autocomplete="off" />
+            <div id="search-results" class="search-results" hidden></div>
+          </div>
+          <button type="button" class="btn-icon theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Theme"></button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-content" class="main">
+      <section class="section">
+        <div class="container narrow legal">
+          <h1>Privacy Policy</h1>
+          <p class="muted">Last updated: <span id="policy-date"></span></p>
+
+          <h2>Overview</h2>
+          <p>
+            This Privacy Policy explains how BackOntrack (“we”, “us”) collects, uses, and shares information when you use this website.
+          </p>
+
+          <h2>Information we collect</h2>
+          <ul>
+            <li><strong>Contact form submissions</strong>: if you send a message, we receive the information you provide (name, email, message).</li>
+            <li><strong>Usage/technical data</strong>: standard server logs and basic device/browser data may be processed by hosting providers or analytics/ads tools you enable.</li>
+            <li><strong>Local storage</strong>: we store your theme preference (dark/light) in <code>localStorage</code> under <code>backontrack-theme</code>.</li>
+          </ul>
+
+          <h2>Cookies and advertising</h2>
+          <p>
+            If you enable Google Ads/AdSense or analytics, those services may use cookies or similar technologies to measure performance and personalize ads where permitted.
+            Please configure consent and cookie requirements according to your jurisdiction.
+          </p>
+
+          <h2>How we use information</h2>
+          <ul>
+            <li>To provide and improve the website experience</li>
+            <li>To respond to inquiries and support requests</li>
+            <li>To measure site performance and advertising effectiveness (if enabled)</li>
+          </ul>
+
+          <h2>Sharing</h2>
+          <p>
+            We may share information with service providers used to host the site and process form submissions. We do not sell personal information.
+          </p>
+
+          <h2>Data retention</h2>
+          <p>
+            We keep contact messages as long as needed to respond and for reasonable record-keeping. Theme preference remains in your browser until you clear site data.
+          </p>
+
+          <h2>Contact</h2>
+          <p>
+            Questions about privacy? Contact us via <a href="contact.html">Contact</a>.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>© <span id="year"></span> BackOntrack.</p>
+        <div class="footer-links" aria-label="Footer links">
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" crossorigin="anonymous"></script>
+    <script type="module" src="js/theme.js"></script>
+    <script type="module" src="js/search.js"></script>
+    <script>
+      document.getElementById("policy-date").textContent = new Date().toLocaleDateString();
+    </script>
+  </body>
+</html>
+

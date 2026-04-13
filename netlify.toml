@@ -1,0 +1,4 @@
+# Static site — no build step. Site root = publish root.
+[build]
+  publish = "."
+  # command intentionally omitted (plain HTML/CSS/JS)

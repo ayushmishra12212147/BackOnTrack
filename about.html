@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Unit topics and practice — BackOntrack." />
-    <title>Unit — BackOntrack</title>
+    <meta name="description" content="About BackOntrack — our mission and what we offer." />
+    <title>About — BackOntrack</title>
     <link rel="stylesheet" href="css/variables.css" />
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/components.css" />
@@ -19,7 +19,7 @@
         <a class="logo" href="index.html">Back<span>Ontrack</span></a>
         <nav class="top-nav" aria-label="Primary">
           <a href="index.html">Home</a>
-          <a href="about.html">About</a>
+          <a href="about.html" aria-current="page">About</a>
           <a href="contact.html">Contact</a>
           <a href="privacy.html">Privacy</a>
         </nav>
@@ -35,31 +35,27 @@
     </header>
 
     <main id="main-content" class="main">
-      <div class="container">
-        <nav class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb"></nav>
-        <div id="loading-page" class="loading-state">
-          <span class="spinner" aria-hidden="true"></span>
-          <span>Loading unit…</span>
+      <section class="section">
+        <div class="container narrow legal">
+          <h1>About BackOntrack</h1>
+          <p class="muted">
+            BackOntrack is a lightweight educational website built with HTML, CSS, and vanilla JavaScript. It helps learners study unit-wise notes and practice questions without needing an account.
+          </p>
+
+          <h2>What we offer</h2>
+          <ul>
+            <li>Subjects: C Programming, DBMS, Java, and DSA</li>
+            <li>Six units per subject</li>
+            <li>Topic-wise notes with code blocks</li>
+            <li>Practice at the end of each unit: MCQs, theory, and coding prompts</li>
+          </ul>
+
+          <h2>Contact</h2>
+          <p>
+            Have feedback or want to suggest improvements? Visit our <a href="contact.html">Contact</a> page.
+          </p>
         </div>
-        <article id="page-content" class="unit-article" hidden>
-          <header class="unit-header">
-            <h1 id="unit-title"></h1>
-            <p id="unit-summary" class="muted"></p>
-          </header>
-          <section class="section-block" aria-labelledby="topics-heading">
-            <h2 id="topics-heading">Topics in this unit</h2>
-            <ul id="topic-list" class="topic-list"></ul>
-          </section>
-          <section class="section-block practice-section" aria-labelledby="practice-heading">
-            <h2 id="practice-heading">Practice</h2>
-            <p class="muted">Complete these after you finish the topics above.</p>
-            <div id="practice-mcqs" class="practice-block"></div>
-            <div id="practice-theory" class="practice-block"></div>
-            <div id="practice-coding" class="practice-block"></div>
-          </section>
-        </article>
-        <p id="page-error" class="error-msg" hidden></p>
-      </div>
+      </section>
     </main>
 
     <footer class="site-footer">
@@ -75,12 +71,8 @@
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js" crossorigin="anonymous"></script>
     <script type="module" src="js/theme.js"></script>
     <script type="module" src="js/search.js"></script>
-    <script type="module" src="js/pages/unit.js"></script>
   </body>
 </html>
+
